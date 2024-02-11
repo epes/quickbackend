@@ -1,6 +1,6 @@
 module github.com/epes/quickbackend
 
-go 1.21.7
+go 1.22.0
 
 require (
 	github.com/epes/econfig v0.0.0-20220402212001-772f32b975d5

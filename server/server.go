@@ -10,9 +10,10 @@ import (
 )
 
 type server struct {
-	cfg    config.Config
-	logger logger.Logger
-	api    api.API
+	cfg     config.Config
+	logger  logger.Logger
+	api     api.API
+	handler http.Handler
 }
 
 func newServer(cfg config.Config, logger logger.Logger, api api.API) (*server, error) {
@@ -22,21 +23,20 @@ func newServer(cfg config.Config, logger logger.Logger, api api.API) (*server, e
 		api:    api,
 	}
 
-	return s, nil
-}
-
-func (s *server) Serve() {
-	mux := http.NewServeMux()
-
-	s.logger.Debug(fmt.Sprintf("running web server on :%d", s.cfg.Port))
-
-	middlewareMux := middleware.Apply(
-		mux,
+	s.handler = middleware.Apply(
+		s.routedMux(),
 		middleware.Header("Content-Type", "application/json"),
 		middleware.Logger(s.logger),
 	)
 
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", s.cfg.Port), middlewareMux); err != nil {
+	return s, nil
+}
+
+func (s *server) Serve() {
+
+	s.logger.Debug(fmt.Sprintf("server listening on :%d", s.cfg.Port))
+
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", s.cfg.Port), s.handler); err != nil && err != http.ErrServerClosed {
 		s.logger.Fatalw("web server", "err", err)
 	}
 }
