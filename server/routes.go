@@ -7,8 +7,8 @@ func (s *server) routedMux() *http.ServeMux {
 
 	mux.HandleFunc("GET /health", s.handleHealth())
 
-	mux.HandleFunc("GET /greet/{name}", s.handleGreetGet())
-	mux.HandleFunc("POST /greet", s.handleGreetPost())
+	mux.HandleFunc("GET /api/greet/{name}", s.handleGreetGet())
+	mux.HandleFunc("POST /api/greet", s.handleGreetPost())
 
 	return mux
 }

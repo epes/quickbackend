@@ -25,6 +25,7 @@ func newServer(cfg config.Config, logger logger.Logger, api api.API) (*server, e
 
 	s.handler = middleware.Apply(
 		s.routedMux(),
+		middleware.Cors(s.logger, s.cfg),
 		middleware.Header("Content-Type", "application/json"),
 		middleware.Logger(s.logger),
 	)

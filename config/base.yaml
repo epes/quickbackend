@@ -1,1 +1,8 @@
 port: 13331
+access_control_allow_methods:
+  - GET
+  - POST
+  - OPTIONS
+access_control_allow_headers:
+  - Origin
+  - Content-Type
