@@ -6,6 +6,7 @@ import (
 	"github.com/epes/quickbackend/environment"
 	"github.com/epes/quickbackend/logger"
 	"github.com/epes/quickbackend/server"
+	"github.com/epes/quickbackend/store/kvstore"
 	"go.uber.org/fx"
 )
 
@@ -15,6 +16,8 @@ func main() {
 			environment.New,
 			config.New,
 			logger.New,
+			kvstore.NewStringKV,
+			kvstore.NewIntKV,
 			api.New,
 		),
 		fx.Invoke(server.Invoke),

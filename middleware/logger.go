@@ -10,7 +10,7 @@ import (
 func Logger(logger logger.Logger) Middleware {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			start := time.Now().UnixMilli()
+			start := time.Now()
 			requestUuid, _ := uuid.NewRandom()
 			requestId := requestUuid.String()
 
@@ -26,7 +26,7 @@ func Logger(logger logger.Logger) Middleware {
 			logger.Infow(
 				"http response",
 				"request_id", requestId,
-				"timing", time.Now().UnixMilli()-start,
+				"timing", time.Now().Sub(start).String(),
 			)
 		})
 	}

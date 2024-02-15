@@ -6,13 +6,22 @@ import (
 	"time"
 )
 
+type HealthResponse struct {
+	Ok     bool  `json:"ok"`
+	Uptime int64 `json:"uptime"`
+}
+
 func (s *server) handleHealth() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		health := struct {
-			Ok     bool  `json:"ok"`
-			Uptime int64 `json:"uptime"`
-		}{
-			Ok:     true,
+		ok := true
+		healthErr := s.api.Health(r.Context())
+		if healthErr != nil {
+			s.logger.Errorw("health check error", healthErr)
+			ok = false
+		}
+
+		health := HealthResponse{
+			Ok:     ok,
 			Uptime: time.Now().Sub(s.cfg.ServerStartTime).Milliseconds(),
 		}
 
